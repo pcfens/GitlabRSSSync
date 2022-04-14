@@ -8,14 +8,6 @@ services:
       - db
     volumes:
       - ./config.yaml:/config/config.yaml
-    command:
-      - /app/wait-for-it.sh
-      - ${REDIS_URL}
-      - --timeout=60
-      - --strict
-      - --
-      - /app/rss_sync
-    restart: unless-stopped
     ports:
       - "8080:8080"
   db:
