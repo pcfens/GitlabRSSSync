@@ -1,11 +1,12 @@
-FROM golang:latest
+FROM golang:1.18 AS build
 RUN mkdir /app
 COPY go.mod /app/
 WORKDIR /app
 RUN go mod download
 COPY . /app
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o rss_sync .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o rss_sync
 
-COPY wait-for-it.sh /app/
-RUN chmod +x /app/wait-for-it.sh
-CMD ["/app/rss_sync"]
+FROM scratch
+
+COPY --from=build /app/rss_sync /rss_sync
+CMD ["/rss_sync"]
